@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    gateway:
+      # 允许跨域
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: '*'
+            allowed-headers: '*'
+            allowed-methods: '*'
+
+      routes:
+        - id: test-route
+          uri: lb://service-test
+          # 断言规则
+          predicates:
+            - Path=/api/test/**
+          filters:
+            - RewritePath= /api/test/?(?<segment>.*), /$\{segment}
+            # 自定义过滤器
+            - OnceToken= X-Response-Token, jwt
+          # 过滤器
+#          filters:
+          # 数据信息
+#          metadata:
+          # 顺序
+#          order:
+        - id: test2-route
+          uri: https://cn.bing.com/
+          predicates:
+            - Path= /search
+            - Query= q,hh
+            # 自定义断言
+            - Test=user,zxy

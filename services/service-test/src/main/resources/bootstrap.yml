@@ -1,0 +1,52 @@
+# 服务配置
+server:
+  port: 8000
+spring:
+  application:
+    name: service-test
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.118.236:8848
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        namespace: ${spring.profiles.active:test}
+
+    sentinel:
+      transport:
+#        dashboard: 8.130.118.236:8858
+        dashboard: localhost:8858
+      eager: true
+      # 关闭统一web上下文
+#      web-context-unify: false
+
+#配置导入(开发环境)
+---
+spring:
+  config:
+    import:
+      - nacos:application.properties?group=TEST_GROUP
+      - nacos:application.properties?group=DEFAULT_GROUP
+    activate:
+      on-profile: dev
+
+# 配置导入(测试环境)
+---
+spring:
+  config:
+    import:
+      - nacos:common.yml?group=testgroup
+    activate:
+      on-profile: test
+
+# 配置导入(生产环境)
+---
+spring:
+  config:
+    import:
+      - nacos:application.properties?group=TEST_GROUP
+      - nacos:application.properties?group=DEFAULT_GROUP
+    activate:
+      on-profile: prod

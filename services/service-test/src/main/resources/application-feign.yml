@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          # 默认
+          default:
+            logger-level: full
+            connect-timeout: 1000
+            read-timeout: 2000
+          # test客户端
+          service-test:
+            logger-level: full
+            connect-timeout: 3000
+            read-timeout: 3000
+            retryer: feign.retryer.Default
+            # 不配置默认全局生效
+            request-interceptors:
+              - com.benzhi.test.interceptor.TokenRequestInterceptor
+
+
+
+feign:
+  sentinel:
+    # 启用熔断
+    enabled: true
